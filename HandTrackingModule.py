@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import time
 
-
+# HandDetector that will be used for detection of the hands (from the mediapipe library)
 class HandDetector():
     def __init__(self, mode=False, maxHands=2, complex=1, detectionCon=0.5, trackingCon=0.5):
         self.mode = mode
@@ -15,10 +15,10 @@ class HandDetector():
         self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.complex, self.detectionCon, self.trackingCon)
         self.mpDraw = mp.solutions.drawing_utils
 
+    # Draws lines using landmarks onto the image that corresponds to various parts of the hand
     def findHands(self, img, draw=True):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
-        # print(results.multi_hand_landmarks)
 
         if self.results.multi_hand_landmarks:
             for HandLms in self.results.multi_hand_landmarks:
@@ -26,6 +26,7 @@ class HandDetector():
                     self.mpDraw.draw_landmarks(img, HandLms, self.mpHands.HAND_CONNECTIONS)
         return img
 
+    # Returns a list containing positions of various landmarks
     def findPosition(self, img, Handno=0):
         lmList = []
         if self.results.multi_hand_landmarks:
@@ -39,6 +40,7 @@ class HandDetector():
 
         return lmList
 
+# main function that calls the HandDetector object to detect hands in the video feed
 def main():
     cTime = 0
     pTime = 0
